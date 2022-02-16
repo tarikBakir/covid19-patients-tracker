@@ -1,4 +1,5 @@
-﻿using covid19_patients_tracker.Models;
+﻿using covid19_patients_tracker.Interfaces;
+using covid19_patients_tracker.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,45 +10,36 @@ using System.Threading.Tasks;
 namespace covid19_patients_tracker.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api")]
     public class PatientController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private readonly IPatientRepository _patientRepository;
 
-        private readonly ILogger<PatientController> _logger;
-
-        public PatientController(ILogger<PatientController> logger)
+        public PatientController(IPatientRepository patientRepository)
         {
-            _logger = logger;
+            _patientRepository = patientRepository;
+        }
+        [Route("patients")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllPatients()
+        {
+            var result = await _patientRepository.GetAllPatientsAsync();
+            return Ok(result);
         }
 
-        [HttpGet]
-        public IEnumerable<Patient> Get()
+        //[Route("{id}")]
+        //public async Task<IActionResult> GetPatientById(int id)
+        //{
+        //    var result = await _patientRepository.GetPatientByIdAsync(id);
+        //    return Ok(result);
+        //}
+
+        [Route("patients")]
+        [HttpPut]
+        public async Task<IActionResult> CreatePatient([FromBody] Patient patient)
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new Patient
-            {
-                Id = 1,
-                GovId = "207489738",
-                PatientId = "1",
-                Address = new Address
-                {
-                    City = "Tel Aviv",
-                    ApartmentNumber = 0,
-                    HouseNumber = 89,
-                    Street = "Street Test Name"
-                },
-                DateOfBirth = new DateTime(),
-                FirstName = "Jack",
-                LastName = "Wiggle",
-                Email = "Jack@test.com",
-                HouseMembersNumber = 3,
-                PhoneNumber = "0549552948"
-            })
-            .ToArray();
+            var result = await _patientRepository.CreatePatientAsync(patient);
+            return Ok(result);
         }
     }
 }

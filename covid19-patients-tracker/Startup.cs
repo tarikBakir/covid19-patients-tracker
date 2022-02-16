@@ -1,4 +1,6 @@
 using covid19_patients_tracker.Data;
+using covid19_patients_tracker.Interfaces;
+using covid19_patients_tracker.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,10 +32,15 @@ namespace covid19_patients_tracker
         {
             services.AddDbContext<CovidTrackerDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("Connection")));
+
+            // Injecting repositories
+            services.AddScoped<IPatientRepository, PatientRepository>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "covid19_patients_tracker", Version = "v1" });
+                c.EnableAnnotations();
             });
         }
 
@@ -55,7 +62,15 @@ namespace covid19_patients_tracker
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "api/{action=patients}"
+                    );
+
+                //endpoints.MapControllerRoute(
+                //    name: "default",
+                //    pattern: "api/{controller=Patient}/{action=List}/{id?}"
+                //    );
             });
         }
     }
