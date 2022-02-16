@@ -8,6 +8,7 @@ namespace covid19_patients_tracker_unit_test
         [TestMethod]
         public void TestMethod1()
         {
+
             Assert.IsTrue(true);
         }
     }
