@@ -15,6 +15,7 @@ namespace covid19_patients_tracker.Controllers
     {
         private readonly IPatientRepository _patientRepository;
 
+
         public PatientController(IPatientRepository patientRepository)
         {
             _patientRepository = patientRepository;
