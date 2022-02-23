@@ -3,6 +3,7 @@ pipeline {
 
     stages {
         stage('Build') {
+            when { changelog 'release*' }
             steps {
                 echo 'Building..'
             }
