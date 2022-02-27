@@ -8,10 +8,8 @@ namespace covid19_patients_tracker.Models
 
         public string encounteredPatientId { get; set; }
 
-        [JsonIgnore]
         public PotentialPatient potentialPatientDetails { get; set; }
 
-        [JsonIgnore]
         public Patient encounteredPatient { get; set; }
     }
 }

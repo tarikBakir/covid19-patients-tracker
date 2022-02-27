@@ -23,10 +23,10 @@ namespace covid19_patients_tracker.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.Entity<Person>().HasKey(x => new { x.Id });
-            modelBuilder.Entity<Patient>();
-            modelBuilder.Entity<PotentialPatient>();
+            modelBuilder.Entity<Patient>().HasKey(x => new { x.PatientID });
+            modelBuilder.Entity<PotentialPatient>().HasKey(x => new { x.PotentialPatientID });
             modelBuilder.Entity<Address>().HasKey(x => new { x.Id });
-            modelBuilder.Entity<LabTest>();
+            modelBuilder.Entity<LabTest>().HasKey(x => new { x.TestID });
 
             modelBuilder.Entity<PatientEncounter>()
                 .HasKey(x => new { x.potentialPatientId, x.encounteredPatientId });

@@ -20,7 +20,7 @@ namespace covid19_patients_tracker.Repositories
             {
                 LabID = labTest.LabID,
                 TestID = labTest.TestID,
-                PatientID = patient,
+                Patient = patient,
                 TestDate = labTest.TestDate,
                 isCovidPositive = labTest.isCovidPositive,
 

@@ -43,12 +43,36 @@ namespace covid19_patients_tracker.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("covid19_patients_tracker.Models.LabTest", b =>
+                {
+                    b.Property<string>("TestID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LabID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PatientID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("TestDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("isCovidPositive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("TestID");
+
+                    b.HasIndex("PatientID");
+
+                    b.ToTable("LabTests");
+                });
+
             modelBuilder.Entity("covid19_patients_tracker.Models.Patient", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("PatientID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("AddressId")
                         .HasColumnType("int");
@@ -83,19 +107,33 @@ namespace covid19_patients_tracker.Migrations
                     b.Property<bool>("isCovidPositive")
                         .HasColumnType("bit");
 
-                    b.HasKey("Id");
+                    b.HasKey("PatientID");
 
                     b.HasIndex("AddressId");
 
                     b.ToTable("Patients");
                 });
 
+            modelBuilder.Entity("covid19_patients_tracker.Models.PatientEncounter", b =>
+                {
+                    b.Property<string>("potentialPatientId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("encounteredPatientId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("potentialPatientId", "encounteredPatientId");
+
+                    b.HasIndex("encounteredPatientId");
+
+                    b.ToTable("PatientEncounters");
+                });
+
             modelBuilder.Entity("covid19_patients_tracker.Models.PotentialPatient", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("PotentialPatientID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -110,9 +148,18 @@ namespace covid19_patients_tracker.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.HasKey("Id");
+                    b.HasKey("PotentialPatientID");
 
                     b.ToTable("PotentialPatients");
+                });
+
+            modelBuilder.Entity("covid19_patients_tracker.Models.LabTest", b =>
+                {
+                    b.HasOne("covid19_patients_tracker.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientID");
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("covid19_patients_tracker.Models.Patient", b =>
@@ -122,6 +169,35 @@ namespace covid19_patients_tracker.Migrations
                         .HasForeignKey("AddressId");
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("covid19_patients_tracker.Models.PatientEncounter", b =>
+                {
+                    b.HasOne("covid19_patients_tracker.Models.Patient", "encounteredPatient")
+                        .WithMany("PatientEcounters")
+                        .HasForeignKey("encounteredPatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("covid19_patients_tracker.Models.PotentialPatient", "potentialPatientDetails")
+                        .WithMany("PatientEcounters")
+                        .HasForeignKey("potentialPatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("encounteredPatient");
+
+                    b.Navigation("potentialPatientDetails");
+                });
+
+            modelBuilder.Entity("covid19_patients_tracker.Models.Patient", b =>
+                {
+                    b.Navigation("PatientEcounters");
+                });
+
+            modelBuilder.Entity("covid19_patients_tracker.Models.PotentialPatient", b =>
+                {
+                    b.Navigation("PatientEcounters");
                 });
 #pragma warning restore 612, 618
         }

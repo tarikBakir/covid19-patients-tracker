@@ -31,10 +31,10 @@ namespace covid19_patients_tracker.Repositories
 
         public async Task<Patient> GetPatientByIdAsync(string id)
         {
-            return await _covidTrackerDbContext.Patients.FirstOrDefaultAsync(patient => patient.Id == id);
+            return await _covidTrackerDbContext.Patients.FirstOrDefaultAsync(patient => patient.PatientID == id);
         }
 
-        async Task<Patient> AddPatientEncounter(Patient patient, PotentialPatient potentialPatient)
+        public async Task<Patient> AddPatientEncounter(Patient patient, PotentialPatient potentialPatient)
         {
             await _covidTrackerDbContext.PotentialPatients.AddAsync(potentialPatient);
 
@@ -50,7 +50,7 @@ namespace covid19_patients_tracker.Repositories
             return patient;
         }
 
-        async Task<List<PatientEncounter>> GetPatientEncounters(string patientId)
+        public async Task<List<PatientEncounter>> GetPatientEncounters(string patientId)
         {
             var result = await _covidTrackerDbContext.PatientEncounters.Where(p => p.encounteredPatientId == patientId).Include(enc => enc.encounteredPatient).Include(pot => pot.potentialPatientDetails).ToListAsync();
             return result;
