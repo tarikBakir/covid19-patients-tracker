@@ -43,7 +43,8 @@ namespace covid19_patients_tracker.Controllers
                 Email = newPatintRequest.Email,
                 Address = newPatintRequest.Address,
                 HouseMembersNumber = newPatintRequest.HouseResidentsAmount,
-                isCovidPositive = newPatintRequest.IsCovidPositive
+                isCovidPositive = newPatintRequest.IsCovidPositive,
+                CreatedOn = DateTime.UtcNow
             };
             var result = await _patientRepository.CreatePatientAsync(newPatient);
             return Ok(new { patientID = result.PatientID });
@@ -167,16 +168,46 @@ namespace covid19_patients_tracker.Controllers
         }
 
         [Route("patients/new")]
+        [ProducesResponseType(typeof(List<PatientEncounterResponse>), 200)]
         [HttpGet]
-        public async Task<IActionResult> GetListOfPatientsSince([FromBody] DateTime date)
+        public async Task<IActionResult> GetListOfPatientsSince([FromQuery] DateTime since)
         {
-            //if (string.IsNullOrWhiteSpace(date))
-            //{
-            //    throw new ArgumentNullException(nameof(date));
-            //}
+            if (since > DateTime.UtcNow)
+            {
+                return BadRequest(new { message = "date cannot be in the future." });
+            }
 
-            // var result = await _patientRepository.GetListOfPatientsSince(date);
-            return Ok("");
+            List<PatientEncounter> result = await _patientRepository.GetListOfPatientsSince(since);
+            List<PatientEncounterResponse> patientEncounters = new List<PatientEncounterResponse>();
+
+            foreach (PatientEncounter enc in result)
+            {
+                patientEncounters.Add(new PatientEncounterResponse
+                {
+                    PotentialPatientDetails = new GetPotentialPatientResponse
+                    {
+                        PotentialPatientID = enc?.potentialPatientDetails?.PotentialPatientID,
+                        FirstName = enc?.potentialPatientDetails?.FirstName,
+                        LastName = enc?.potentialPatientDetails?.LastName,
+                        PhoneNumber = enc?.potentialPatientDetails?.PhoneNumber
+                    },
+                    encounteredPatient = new GetPatientResponse
+                    {
+                        PatientID = enc?.encounteredPatient?.PatientID,
+                        GovtID = enc?.encounteredPatient?.GovtId,
+                        FirstName = enc?.encounteredPatient?.FirstName,
+                        LastName = enc?.encounteredPatient?.LastName,
+                        BirthDate = enc.encounteredPatient.DateOfBirth,
+                        PhoneNumber = enc?.encounteredPatient?.PhoneNumber,
+                        Email = enc?.encounteredPatient?.Email,
+                        Address = enc?.encounteredPatient?.Address,
+                        HouseResidentsAmount = enc.encounteredPatient.HouseMembersNumber,
+                        infectedByPatientID = ""
+                    }
+                });
+            }
+
+            return Ok(patientEncounters);
         }
 
         [Route("patients/potential")]
@@ -247,7 +278,8 @@ namespace covid19_patients_tracker.Controllers
                 Email = newPatient.Email,
                 Address = newPatient.Address,
                 HouseMembersNumber = newPatient.HouseResidentsAmount,
-                isCovidPositive = newPatient.IsCovidPositive
+                isCovidPositive = newPatient.IsCovidPositive,
+                CreatedOn = DateTime.UtcNow
             };
 
             Patient result = await _patientRepository.TransferFromPotentialPatientToRealPatient(potentialPatientId, patient);
