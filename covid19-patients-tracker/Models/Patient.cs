@@ -20,5 +20,6 @@ namespace covid19_patients_tracker.Models
         public int HouseMembersNumber { get; set; }
         [Required]
         public bool isCovidPositive { get; set; }
+
     }
 }
