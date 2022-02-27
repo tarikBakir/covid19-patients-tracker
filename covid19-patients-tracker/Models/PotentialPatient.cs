@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,5 +8,7 @@ namespace covid19_patients_tracker.Models
 {
     public class PotentialPatient : Person
     {
+        [JsonIgnore]
+        public List<PatientEncounter> PatientEcounters { get; set; }
     }
 }

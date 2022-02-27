@@ -29,9 +29,31 @@ namespace covid19_patients_tracker.Repositories
             return await _covidTrackerDbContext.Patients.ToListAsync();
         }
 
-        public async Task<Patient> GetPatientByIdAsync(int id)
+        public async Task<Patient> GetPatientByIdAsync(string id)
         {
             return await _covidTrackerDbContext.Patients.FirstOrDefaultAsync(patient => patient.Id == id);
+        }
+
+        async Task<Patient> AddPatientEncounter(Patient patient, PotentialPatient potentialPatient)
+        {
+            await _covidTrackerDbContext.PotentialPatients.AddAsync(potentialPatient);
+
+            PatientEncounter newpatientEncounter = new PatientEncounter
+            {
+                encounteredPatient = patient,
+                potentialPatientDetails = potentialPatient
+            };
+
+            await _covidTrackerDbContext.PatientEncounters.AddAsync(newpatientEncounter);
+            await _covidTrackerDbContext.SaveChangesAsync();
+
+            return patient;
+        }
+
+        async Task<List<PatientEncounter>> GetPatientEncounters(string patientId)
+        {
+            var result = await _covidTrackerDbContext.PatientEncounters.Where(p => p.encounteredPatientId == patientId).Include(enc => enc.encounteredPatient).Include(pot => pot.potentialPatientDetails).ToListAsync();
+            return result;
         }
     }
 }
