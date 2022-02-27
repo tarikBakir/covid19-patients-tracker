@@ -1,5 +1,7 @@
 ﻿
 
+using System.Collections.Generic;
+
 namespace covid19_patients_tracker.Models.Dtos
 {
     public class PatientMedicalFile
@@ -7,6 +9,6 @@ namespace covid19_patients_tracker.Models.Dtos
         public GetPatientResponse PatientDetails { get; set; }
         public bool IsCovidPositive { get; set; }
 
-        public LabTestRequest LabResults { get; set; }
+        public List<LabTestRequest> LabResults { get; set; }
     }
 }

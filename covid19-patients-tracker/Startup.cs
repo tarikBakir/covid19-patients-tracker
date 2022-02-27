@@ -36,6 +36,7 @@ namespace covid19_patients_tracker
 
             // Injecting repositories
             services.AddScoped<IPatientRepository, PatientRepository>();
+            services.AddScoped<ILabTestRepository, LabTestRepository>();
 
             services.AddControllers()
                 .AddNewtonsoftJson(

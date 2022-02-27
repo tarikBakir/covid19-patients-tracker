@@ -6,6 +6,6 @@ namespace covid19_patients_tracker.Interfaces
 {
     public interface ILabTestRepository
     {
-        Task<string> CreateLabTest(LabTestRequest labTest);
+        Task<LabTest> CreateLabTest(LabTestRequest labTest);
     }
 }

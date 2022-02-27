@@ -13,10 +13,15 @@ namespace covid19_patients_tracker.Repositories
         {
             _covidTrackerDbContext = covidTrackerDbContext;
         }
-        public async Task<string> CreateLabTest(LabTestRequest labTest)
+        public async Task<LabTest> CreateLabTest(LabTestRequest labTest)
         {
             var patient = await _covidTrackerDbContext.Patients.FindAsync(labTest.PatientID);
-            var _labTest = new LabTest
+            if (patient == null)
+            {
+                throw new System.Exception("Patient Not Found");
+            }
+
+            LabTest _labTest = new LabTest
             {
                 LabID = labTest.LabID,
                 TestID = labTest.TestID,
@@ -28,7 +33,7 @@ namespace covid19_patients_tracker.Repositories
             _covidTrackerDbContext.LabTests.Add(_labTest);
             await _covidTrackerDbContext.SaveChangesAsync();
 
-            return labTest.PatientID;
+            return _labTest;
         }
     }
 }

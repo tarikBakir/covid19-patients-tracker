@@ -30,13 +30,6 @@ namespace covid19_patients_tracker.Controllers
             return Ok(result);
         }
 
-        //[Route("{id}")]
-        //public async Task<IActionResult> GetPatientById(int id)
-        //{
-        //    var result = await _patientRepository.GetPatientByIdAsync(id);
-        //    return Ok(result);
-        //}
-
         [Route("patients")]
         [HttpPut]
         public async Task<IActionResult> CreatePatient([FromBody] NewPatientRequest newPatintRequest)
@@ -97,15 +90,29 @@ namespace covid19_patients_tracker.Controllers
 
         [Route("patients/{id}/route")]
         [HttpPut]
-        public async Task<IActionResult> AddLocationVisit([FromRoute] string id, [FromBody] NewPatientVisitedSite newPatintEncounter)
+        public async Task<IActionResult> AddLocationVisit([FromRoute] string id, [FromBody] NewPatientVisitedSite newPatintSite)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest(new { message = "Patient ID not provided." });
             }
 
-            // var result = await _patientRepository.AddLocationVisitAsync(int.Parse(id));
-            return Ok("");
+            var patient = await _patientRepository.GetPatientByIdAsync(id);
+            if (patient == null)
+            {
+                return NotFound(new { Message = "Patient Not Found." }); ;
+            }
+
+            SiteVisit siteVisit = new SiteVisit
+            {
+                SiteName = newPatintSite.SiteName,
+                SiteAddress = newPatintSite.SiteAddress,
+                DateOfVisit = newPatintSite.DateOfVisit,
+                PatientId = id
+            };
+
+            var result = await _patientRepository.AddNewPatientVisit(id, siteVisit);
+            return Ok(new { });
         }
 
         [Route("patients/{id}/route")]
@@ -118,21 +125,45 @@ namespace covid19_patients_tracker.Controllers
                 return BadRequest(new { message = "Patient ID not provided." });
             }
 
-            // var result = await _patientRepository.GetListLocationsAsync(id);
-            return Ok("");
+            var patient = await _patientRepository.GetPatientByIdAsync(id);
+            if (patient == null)
+            {
+                return NotFound(new { Message = "Patient Not Found." }); ;
+            }
+
+            List<SiteVisit> result = await _patientRepository.GetPatientVisits(id);
+            List<NewPatientVisitedSite> sitesVisited = new List<NewPatientVisitedSite>();
+
+            foreach(SiteVisit siteVisit in result)
+            {
+                sitesVisited.Add(new NewPatientVisitedSite {
+                    SiteName = siteVisit.SiteName,
+                    SiteAddress = siteVisit.SiteAddress,
+                    DateOfVisit = siteVisit.DateOfVisit
+                });
+            }
+
+            return Ok(sitesVisited);
         }
 
         [Route("patients/{id}/full")]
+        [ProducesResponseType(typeof(PatientMedicalFile), 200)]
         [HttpGet]
         public async Task<IActionResult> GetAllDeatilsByPatientId([FromRoute] string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new ArgumentNullException(nameof(id));
+                return BadRequest(new { message = "Patient ID not provided." });
             }
 
-            // var result = await _patientRepository.GetAllDeatilsByPatientId(id);
-            return Ok("");
+            var patient = await _patientRepository.GetPatientByIdAsync(id);
+            if (patient == null)
+            {
+                return NotFound(new { Message = "Patient Not Found." }); ;
+            }
+
+            var result = await _patientRepository.GetPatientFullDetails(id);
+            return Ok(result);
         }
 
         [Route("patients/new")]
