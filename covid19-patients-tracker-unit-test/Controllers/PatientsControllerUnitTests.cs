@@ -23,7 +23,18 @@ namespace covid19_patients_tracker_unit_test.Controllers
         {
             _patientRepository = new Mock<IPatientRepository>();
 
-            List<Patient> mockPatients = new List<Patient>();
+            List<Patient> mockPatients = new List<Patient>{
+                new Patient {
+                    PatientID = "1234565789",
+                    FirstName = "test patient",
+                    LastName =  "last name patient"
+                },
+                new Patient {
+                    PatientID = "544345343434343",
+                    FirstName = "test patient2",
+                    LastName =  "last name patient2"
+                }
+            };
 
             Task<List<Patient>> mockPatientsTask = Task.FromResult(mockPatients);
 
@@ -47,7 +58,7 @@ namespace covid19_patients_tracker_unit_test.Controllers
             List<Patient>? patients = okResult.Value as List<Patient>;
 
             // check if there are right amount of patients returned
-            Assert.AreEqual(0, patients.Count, "The length of returned patients list is incorrect.");
+            Assert.AreEqual(2, patients.Count, "The length of returned patients list is incorrect.");
         }
     }
 }
