@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace covid19_patients_tracker.Controllers
 {
     [ApiController]
-    [Route("api")]
+    [Route("")]
     public class PatientController : ControllerBase
     {
         private readonly IPatientRepository _patientRepository;
