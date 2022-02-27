@@ -59,6 +59,9 @@ namespace covid19_patients_tracker
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "covid19_patients_tracker v1"));
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -69,9 +72,6 @@ namespace covid19_patients_tracker
             {
                 endpoints.MapControllers();
             });
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "covid19_patients_tracker v1"));
         }
     }
 }
