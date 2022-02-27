@@ -1,7 +1,7 @@
 ﻿using covid19_patients_tracker.Data;
 using covid19_patients_tracker.Interfaces;
 using covid19_patients_tracker.Models;
-using covid19_patients_tracker.Models.DTOs;
+using covid19_patients_tracker.Models.Dtos;
 using System.Threading.Tasks;
 
 namespace covid19_patients_tracker.Repositories
@@ -13,14 +13,19 @@ namespace covid19_patients_tracker.Repositories
         {
             _covidTrackerDbContext = covidTrackerDbContext;
         }
-        public async Task<string> CreateLabTest(LabTestRequest labTest)
+        public async Task<LabTest> CreateLabTest(LabTestRequest labTest)
         {
             var patient = await _covidTrackerDbContext.Patients.FindAsync(labTest.PatientID);
-            var _labTest = new LabTest
+            if (patient == null)
+            {
+                throw new System.Exception("Patient Not Found");
+            }
+
+            LabTest _labTest = new LabTest
             {
                 LabID = labTest.LabID,
                 TestID = labTest.TestID,
-                PatientID = patient,
+                Patient = patient,
                 TestDate = labTest.TestDate,
                 isCovidPositive = labTest.isCovidPositive,
 
@@ -28,7 +33,7 @@ namespace covid19_patients_tracker.Repositories
             _covidTrackerDbContext.LabTests.Add(_labTest);
             await _covidTrackerDbContext.SaveChangesAsync();
 
-            return labTest.PatientID;
+            return _labTest;
         }
     }
 }

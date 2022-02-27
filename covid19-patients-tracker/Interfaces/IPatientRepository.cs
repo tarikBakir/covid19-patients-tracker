@@ -1,4 +1,5 @@
 ﻿using covid19_patients_tracker.Models;
+using covid19_patients_tracker.Models.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,17 @@ namespace covid19_patients_tracker.Interfaces
         Task<Patient> AddPatientEncounter(Patient patient, PotentialPatient potentialPatient);
 
         Task<List<PatientEncounter>> GetPatientEncounters(string patientId);
+
+        Task<SiteVisit> AddNewPatientVisit(string patientID, SiteVisit siteVisit);
+
+        Task<List<SiteVisit>> GetPatientVisits(string patientID);
+
+        Task<PatientMedicalFile> GetPatientFullDetails(string patientID);
+
+        Task<List<PatientEncounter>> GetAllPatientEncounters();
+
+        Task<Patient> TransferFromPotentialPatientToRealPatient(string potentialPatientId, Patient newPatient);
+
+        Task<PotentialPatient> GetPotentialPatientByIdAsync(string id);
     }
 }

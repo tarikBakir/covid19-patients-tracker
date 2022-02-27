@@ -1,24 +1,18 @@
 ﻿using System;
 
-namespace covid19_patients_tracker.Models
+namespace covid19_patients_tracker.Models.Dtos
 {
-    public class PatientMedicalFile
+    public class GetPatientResponse
     {
         public string PatientID { get; set; }
         public string GovtID { get; set; }
         public string FirstName { get; set; }
-        public string LatName { get; set; }
+        public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
-
         public string PhoneNumber { get; set; }
-
         public string Email { get; set; }
-
         public Address Address { get; set; }
-
-        public int HouseResidentAmount { get; set; }
-
-        public string InfectedByPatientID { get; set; }
-
+        public int HouseResidentsAmount { get; set; }
+        public string infectedByPatientID { get; set; }
     }
 }
