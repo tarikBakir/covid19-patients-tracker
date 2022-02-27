@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,5 +21,8 @@ namespace covid19_patients_tracker.Models
         public int HouseMembersNumber { get; set; }
         [Required]
         public bool isCovidPositive { get; set; }
+
+        [JsonIgnore]
+        public List<PatientEncounter> PatientEcounters { get; set; }
     }
 }
