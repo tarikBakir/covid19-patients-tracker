@@ -9,7 +9,11 @@ namespace covid19_patients_tracker.Interfaces
     public interface IPatientRepository
     {
         Task<List<Patient>> GetAllPatientsAsync();
-        Task<Patient> GetPatientByIdAsync(int id);
+        Task<Patient> GetPatientByIdAsync(string id);
         Task<Patient> CreatePatientAsync(Patient patient);
+
+        Task<Patient> AddPatientEncounter(Patient patient, PotentialPatient potentialPatient);
+
+        Task<List<PatientEncounter>> GetPatientEncounters(string patientId);
     }
 }
