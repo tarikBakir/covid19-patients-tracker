@@ -320,8 +320,8 @@ namespace covid19_patients_tracker.Controllers
         [HttpGet]
         public async Task<IActionResult> GetStatistics()
         {
-            // var result = await _labTestRepository.GetStatistics();
-            return Ok("");
+            var result = await _patientRepository.GetStatistics();
+            return Ok(result);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using covid19_patients_tracker.Models;
 using covid19_patients_tracker.Models.Dtos;
+using covid19_patients_tracker.Models.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,5 +33,6 @@ namespace covid19_patients_tracker.Interfaces
         Task<List<PatientEncounter>> GetListOfPatientsSince(DateTime since);
 
         Task<List<PatientEncounter>> GetListOfIsolatedPeople();
+        Task<CovidStatistics> GetStatistics();
     }
 }

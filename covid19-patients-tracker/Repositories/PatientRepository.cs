@@ -2,6 +2,7 @@
 using covid19_patients_tracker.Interfaces;
 using covid19_patients_tracker.Models;
 using covid19_patients_tracker.Models.Dtos;
+using covid19_patients_tracker.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -76,7 +77,7 @@ namespace covid19_patients_tracker.Repositories
 
         public async Task<PatientMedicalFile> GetPatientFullDetails(string id)
         {
-            Patient patient =  await _covidTrackerDbContext.Patients.Where(p => p.PatientID == id).Include(p => p.Address).FirstOrDefaultAsync();
+            Patient patient = await _covidTrackerDbContext.Patients.Where(p => p.PatientID == id).Include(p => p.Address).FirstOrDefaultAsync();
             List<LabTest> labTests = await _covidTrackerDbContext.LabTests.Where(l => l.Patient.PatientID == id).ToListAsync();
 
             GetPatientResponse patientDetails = new GetPatientResponse
@@ -166,10 +167,10 @@ namespace covid19_patients_tracker.Repositories
                     {
                         if (labTest.isCovidPositive)
                         {
-                            negativeTests++;
+                            positiveTests++;
                         } else
                         {
-                            positiveTests++;
+                            negativeTests++;
                         }
                     }
                 }
@@ -182,6 +183,68 @@ namespace covid19_patients_tracker.Repositories
             List<PatientEncounter> patientEncounters = await _covidTrackerDbContext.PatientEncounters.Where(p => isolatedPatintIds.Contains(p.encounteredPatient.PatientID)).Include(p => p.encounteredPatient.Address).Include(p => p.potentialPatientDetails).ToListAsync();
 
             return patientEncounters;
+        }
+
+        public async Task<CovidStatistics> GetStatistics()
+        {
+            List<Patient> patients = await _covidTrackerDbContext.Patients.Include(x => x.Address).ToListAsync();
+
+            var patientsGroupedByCity = patients.GroupBy(x => x.Address.City);
+
+            List<LabTest> labTests = await _covidTrackerDbContext.LabTests.Include(l => l.Patient).ToListAsync();
+            List<Patient> isolatedPatints = new List<Patient>();
+            List<Patient> healedPatients = new List<Patient>();
+            List<CityCovidStats> cityStatistics = new List<CityCovidStats>();
+
+            int infected = 0;
+            foreach (Patient patient in patients)
+            {
+                int negativeTests = 0;
+                int positiveTests = 0;
+
+                foreach (LabTest labTest in labTests)
+                {
+                    if (labTest.Patient.PatientID == patient.PatientID)
+                    {
+                        if (labTest.isCovidPositive)
+                        {
+                            positiveTests++; 
+                        }
+                        else
+                        {
+                            negativeTests++;
+                        }
+                    }
+                }
+                if (negativeTests < 2)
+                {
+                    isolatedPatints.Add(patient);
+                    infected++;
+                } else
+                {
+                    healedPatients.Add(patient);
+                }
+
+            }
+            foreach (var patient in patientsGroupedByCity)
+            {
+                var cityStat = new CityCovidStats()
+                {
+                    Infected = patient.ToList().Count,
+                    City = patient.Key
+                };
+                cityStatistics.Add(cityStat);
+            }
+
+            var statistics = new CovidStatistics()
+            {
+                Infected = patients.Count,
+                Isolated = isolatedPatints.Count,
+                Healed = healedPatients.Count,
+                CityStatistics = cityStatistics
+            };
+
+            return statistics;
         }
     }
 }
