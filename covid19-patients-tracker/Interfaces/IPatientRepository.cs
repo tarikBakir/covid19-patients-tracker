@@ -22,5 +22,7 @@ namespace covid19_patients_tracker.Interfaces
         Task<List<SiteVisit>> GetPatientVisits(string patientID);
 
         Task<PatientMedicalFile> GetPatientFullDetails(string patientID);
+
+        Task<List<PatientEncounter>> GetAllPatientEncounters();
     }
 }

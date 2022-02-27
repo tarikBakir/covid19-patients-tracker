@@ -180,11 +180,38 @@ namespace covid19_patients_tracker.Controllers
         }
 
         [Route("patients/potential")]
+        [ProducesResponseType(typeof(List<PatientEncounterResponse>), 200)]
         [HttpGet]
         public async Task<IActionResult> GetListOfPotentialNotInserted()
         {
-            // var result = await _patientRepository.GetListOfPotentialNotInserted();
-            return Ok("");
+            List<PatientEncounter> result = await _patientRepository.GetAllPatientEncounters();
+            List<PatientEncounterResponse> patientEncounters = new List<PatientEncounterResponse>();
+
+            foreach (PatientEncounter enc in result)
+            {
+                patientEncounters.Add(new PatientEncounterResponse { 
+                    PotentialPatientDetails = new GetPotentialPatientResponse { 
+                        PotentialPatientID = enc?.potentialPatientDetails?.PotentialPatientID,
+                        FirstName = enc?.potentialPatientDetails?.FirstName,
+                        LastName = enc?.potentialPatientDetails?.LastName,
+                        PhoneNumber = enc?.potentialPatientDetails?.PhoneNumber
+                    },
+                    encounteredPatient = new GetPatientResponse { 
+                        PatientID = enc?.encounteredPatient?.PatientID,
+                        GovtID = enc?.encounteredPatient?.GovtId,
+                        FirstName = enc?.encounteredPatient?.FirstName,
+                        LastName= enc?.encounteredPatient?.LastName,
+                        BirthDate = enc.encounteredPatient.DateOfBirth,
+                        PhoneNumber = enc?.encounteredPatient?.PhoneNumber,
+                        Email = enc?.encounteredPatient?.Email,
+                        Address = enc?.encounteredPatient?.Address,
+                        HouseResidentsAmount = enc.encounteredPatient.HouseMembersNumber,
+                        infectedByPatientID = ""
+                    }
+                });
+            }
+
+            return Ok(patientEncounters);
         }
 
         [Route("patients/isolated")]

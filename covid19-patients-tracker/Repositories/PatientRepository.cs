@@ -109,5 +109,10 @@ namespace covid19_patients_tracker.Repositories
                 LabResults = labresults
             };
         }
+
+        public async Task<List<PatientEncounter>> GetAllPatientEncounters()
+        {
+            return await _covidTrackerDbContext.PatientEncounters.Include(p => p.encounteredPatient.Address).Include(p => p.potentialPatientDetails).ToListAsync();
+        }
     }
 }
