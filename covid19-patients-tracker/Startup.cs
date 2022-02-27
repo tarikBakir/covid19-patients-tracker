@@ -62,10 +62,10 @@ namespace covid19_patients_tracker
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "api/{action=patients}"
-                    );
+                //endpoints.MapControllerRoute(
+                //    name: "default",
+                //    pattern: "api/{action=patients}"
+                //    );
 
                 //endpoints.MapControllerRoute(
                 //    name: "default",
