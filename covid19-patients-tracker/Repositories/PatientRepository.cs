@@ -132,5 +132,22 @@ namespace covid19_patients_tracker.Repositories
 
             return newPatient;
         }
+
+        public async Task<List<PatientEncounter>> GetListOfPatientsSince(DateTime since)
+        {
+            List<PatientEncounter> patientEncounters = await _covidTrackerDbContext.PatientEncounters.Include(p => p.encounteredPatient.Address).Include(p => p.potentialPatientDetails).ToListAsync();
+
+            List<PatientEncounter> finalEncounters = new List<PatientEncounter>();
+
+            foreach (PatientEncounter patientEncounter in patientEncounters)
+            {
+                if (patientEncounter.encounteredPatient.isCovidPositive && patientEncounter.encounteredPatient.CreatedOn > since)
+                {
+                    finalEncounters.Add(patientEncounter);
+                }
+            }
+
+            return finalEncounters;
+        }
     }
 }
