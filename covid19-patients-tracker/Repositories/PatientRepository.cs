@@ -34,6 +34,11 @@ namespace covid19_patients_tracker.Repositories
             return await _covidTrackerDbContext.Patients.FirstOrDefaultAsync(patient => patient.PatientID == id);
         }
 
+        public async Task<PotentialPatient> GetPotentialPatientByIdAsync(string id)
+        {
+            return await _covidTrackerDbContext.PotentialPatients.FirstOrDefaultAsync(patient => patient.PotentialPatientID == id);
+        }
+
         public async Task<Patient> AddPatientEncounter(Patient patient, PotentialPatient potentialPatient)
         {
             await _covidTrackerDbContext.PotentialPatients.AddAsync(potentialPatient);
@@ -113,6 +118,19 @@ namespace covid19_patients_tracker.Repositories
         public async Task<List<PatientEncounter>> GetAllPatientEncounters()
         {
             return await _covidTrackerDbContext.PatientEncounters.Include(p => p.encounteredPatient.Address).Include(p => p.potentialPatientDetails).ToListAsync();
+        }
+
+        public async Task<Patient> TransferFromPotentialPatientToRealPatient(string potentialPatientId, Patient newPatient)
+        {
+            PotentialPatient potentialPatientFound = await _covidTrackerDbContext.PotentialPatients.FirstOrDefaultAsync(p => p.PotentialPatientID == potentialPatientId);
+
+            _covidTrackerDbContext.Remove(potentialPatientFound);
+
+            await _covidTrackerDbContext.Patients.AddAsync(newPatient);
+
+            await _covidTrackerDbContext.SaveChangesAsync();
+
+            return newPatient;
         }
     }
 }

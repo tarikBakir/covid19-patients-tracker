@@ -224,10 +224,35 @@ namespace covid19_patients_tracker.Controllers
 
         [Route("patients/potential/{potentialPatientId}")]
         [HttpPost]
-        public async Task<IActionResult> TransferFromPotentialPatientToRealPatient([FromRoute] string potentialPatientId)
+        public async Task<IActionResult> TransferFromPotentialPatientToRealPatient([FromRoute] string potentialPatientId, [FromBody] NewPatientRequest newPatient)
         {
-            // var result = await _labTestRepository.TransferFromPotentialPatientToRealPatient(potentialPatientId);
-            return Ok("");
+            if (string.IsNullOrWhiteSpace(potentialPatientId))
+            {
+                return BadRequest(new { message = "Potential Patient ID not provided." });
+            }
+
+            var potentialPatient = await _patientRepository.GetPotentialPatientByIdAsync(potentialPatientId);
+            if (potentialPatient == null)
+            {
+                return NotFound(new { Message = "Potential Patient Not Found." });
+            }
+
+            Patient patient = new Patient
+            {
+                GovtId = newPatient.GovtID,
+                FirstName = newPatient.FirstName,
+                LastName = newPatient.LastName,
+                DateOfBirth = newPatient.BirthDate,
+                PhoneNumber = newPatient.PhoneNumber,
+                Email = newPatient.Email,
+                Address = newPatient.Address,
+                HouseMembersNumber = newPatient.HouseResidentsAmount,
+                isCovidPositive = newPatient.IsCovidPositive
+            };
+
+            Patient result = await _patientRepository.TransferFromPotentialPatientToRealPatient(potentialPatientId, patient);
+
+            return Ok(new { PatientID = result.PatientID });
         }
 
         [Route("statistics")]

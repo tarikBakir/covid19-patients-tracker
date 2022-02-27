@@ -24,5 +24,9 @@ namespace covid19_patients_tracker.Interfaces
         Task<PatientMedicalFile> GetPatientFullDetails(string patientID);
 
         Task<List<PatientEncounter>> GetAllPatientEncounters();
+
+        Task<Patient> TransferFromPotentialPatientToRealPatient(string potentialPatientId, Patient newPatient);
+
+        Task<PotentialPatient> GetPotentialPatientByIdAsync(string id);
     }
 }
