@@ -1,6 +1,6 @@
 ﻿using covid19_patients_tracker.Interfaces;
 using covid19_patients_tracker.Models;
-using covid19_patients_tracker.Models.DTOs;
+using covid19_patients_tracker.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 

@@ -1,4 +1,5 @@
-﻿using covid19_patients_tracker.Interfaces;
+﻿using covid19_patients_tracker.Dtos;
+using covid19_patients_tracker.Interfaces;
 using covid19_patients_tracker.Models;
 using covid19_patients_tracker.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
@@ -61,26 +62,27 @@ namespace covid19_patients_tracker.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new ArgumentNullException(nameof(id));
+                return BadRequest(new { message = "Patient ID not provided." });
             }
 
             var patient = await _patientRepository.GetPatientByIdAsync(id);
             if (patient == null)
             {
-                throw new ArgumentNullException(nameof(patient));
+                return NotFound(new { Message = "Patient Not Found." }); ;
             }
 
-            PotentialPatient potentialPatient = new PotentialPatient{
+            PotentialPatient potentialPatient = new PotentialPatient {
                 FirstName = newPatintEncounter.FirstName,
                 LastName = newPatintEncounter.LastName,
                 PhoneNumber = newPatintEncounter.PhoneNumber
             };
             
             var potential = await _patientRepository.AddPatientEncounter(patient, potentialPatient);
-            return Ok(potentialPatient);
+            return Ok(new { });
         }
 
         [Route("patients/{id}/encounters")]
+        [ProducesResponseType(typeof(List<PatientEncounter>), 200)]
         [HttpGet]
         public async Task<IActionResult> GetPatientEncounters([FromRoute] string id)
         {
@@ -89,7 +91,7 @@ namespace covid19_patients_tracker.Controllers
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var result = await _patientRepository.GetPatientEncounters(id);
+            List<PatientEncounter> result = await _patientRepository.GetPatientEncounters(id);
             return Ok(result);
         }
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace covid19_patients_tracker.Models.DTOs
+namespace covid19_patients_tracker.Models.Dtos
 {
     public class LabTestRequest
     {

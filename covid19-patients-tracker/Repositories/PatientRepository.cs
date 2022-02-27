@@ -25,7 +25,7 @@ namespace covid19_patients_tracker.Repositories
 
         public async Task<List<Patient>> GetAllPatientsAsync()
         {
-            return await _covidTrackerDbContext.Patients.ToListAsync();
+            return await _covidTrackerDbContext.Patients.Include(p => p.Address).ToListAsync();
         }
 
         public async Task<Patient> GetPatientByIdAsync(string id)
