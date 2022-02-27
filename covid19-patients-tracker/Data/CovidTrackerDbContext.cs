@@ -18,6 +18,7 @@ namespace covid19_patients_tracker.Data
         public DbSet<PotentialPatient> PotentialPatients { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<PatientEncounter> PatientEncounters { get; set; }
+        public DbSet<LabTest> LabTests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,7 @@ namespace covid19_patients_tracker.Data
             modelBuilder.Entity<Patient>();
             modelBuilder.Entity<PotentialPatient>();
             modelBuilder.Entity<Address>().HasKey(x => new { x.Id });
+            modelBuilder.Entity<LabTest>();
 
             modelBuilder.Entity<PatientEncounter>()
                 .HasKey(x => new { x.potentialPatientId, x.encounteredPatientId });

@@ -1,0 +1,11 @@
+﻿using covid19_patients_tracker.Models;
+using covid19_patients_tracker.Models.DTOs;
+using System.Threading.Tasks;
+
+namespace covid19_patients_tracker.Interfaces
+{
+    public interface ILabTestRepository
+    {
+        Task<string> CreateLabTest(LabTestRequest labTest);
+    }
+}
