@@ -88,7 +88,7 @@ namespace covid19_patients_tracker.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GovId")
+                    b.Property<string>("GovtId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

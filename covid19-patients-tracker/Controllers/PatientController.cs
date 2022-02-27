@@ -38,10 +38,21 @@ namespace covid19_patients_tracker.Controllers
 
         [Route("patients")]
         [HttpPut]
-        public async Task<IActionResult> CreatePatient([FromBody] Patient patient)
+        public async Task<IActionResult> CreatePatient([FromBody] NewPatientRequest newPatintRequest)
         {
-            var result = await _patientRepository.CreatePatientAsync(patient);
-            return Ok(result);
+            Patient newPatient = new Patient {
+                GovtId = newPatintRequest.GovtID,
+                FirstName = newPatintRequest.FirstName,
+                LastName = newPatintRequest.LastName,
+                DateOfBirth = newPatintRequest.BirthDate,
+                PhoneNumber = newPatintRequest.PhoneNumber,
+                Email = newPatintRequest.Email,
+                Address = newPatintRequest.Address,
+                HouseMembersNumber = newPatintRequest.HouseResidentsAmount,
+                isCovidPositive = newPatintRequest.IsCovidPositive
+            };
+            var result = await _patientRepository.CreatePatientAsync(newPatient);
+            return Ok(new { patientID = result.PatientID });
         }
 
         [Route("patients/{id}/encounters")]
@@ -92,7 +103,7 @@ namespace covid19_patients_tracker.Controllers
             }
 
             // var result = await _patientRepository.AddLocationVisitAsync(int.Parse(id));
-            return Ok(result);
+            return Ok("");
         }
 
         [Route("patients/{id}/route")]
@@ -105,7 +116,7 @@ namespace covid19_patients_tracker.Controllers
             }
 
             // var result = await _patientRepository.GetListLocationsAsync(id);
-            return Ok(result);
+            return Ok("");
         }
 
         [Route("patients/{id}/full")]
@@ -118,20 +129,20 @@ namespace covid19_patients_tracker.Controllers
             }
 
             // var result = await _patientRepository.GetAllDeatilsByPatientId(id);
-            return Ok(result);
+            return Ok("");
         }
 
         [Route("patients/new")]
         [HttpGet]
         public async Task<IActionResult> GetListOfPatientsSince([FromBody] DateTime date)
         {
-            if (string.IsNullOrWhiteSpace(date))
-            {
-                throw new ArgumentNullException(nameof(date));
-            }
+            //if (string.IsNullOrWhiteSpace(date))
+            //{
+            //    throw new ArgumentNullException(nameof(date));
+            //}
 
             // var result = await _patientRepository.GetListOfPatientsSince(date);
-            return Ok(result);
+            return Ok("");
         }
 
         [Route("patients/potential")]
@@ -139,7 +150,7 @@ namespace covid19_patients_tracker.Controllers
         public async Task<IActionResult> GetListOfPotentialNotInserted()
         {
             // var result = await _patientRepository.GetListOfPotentialNotInserted();
-            return Ok(result);
+            return Ok("");
         }
 
         [Route("patients/isolated")]
@@ -147,7 +158,7 @@ namespace covid19_patients_tracker.Controllers
         public async Task<IActionResult> GetListOfIsolatedPeople()
         {
             // var result = await _patientRepository.GetListOfIsolatedPeople();
-            return Ok(result);
+            return Ok("");
         }
 
         [Route("patients/potential/{potentialPatientId}")]
@@ -155,7 +166,7 @@ namespace covid19_patients_tracker.Controllers
         public async Task<IActionResult> TransferFromPotentialPatientToRealPatient([FromRoute] string potentialPatientId)
         {
             // var result = await _labTestRepository.TransferFromPotentialPatientToRealPatient(potentialPatientId);
-            return Ok(result);
+            return Ok("");
         }
 
         [Route("statistics")]
@@ -163,7 +174,7 @@ namespace covid19_patients_tracker.Controllers
         public async Task<IActionResult> GetStatistics()
         {
             // var result = await _labTestRepository.GetStatistics();
-            return Ok(result);
+            return Ok("");
         }
     }
 }

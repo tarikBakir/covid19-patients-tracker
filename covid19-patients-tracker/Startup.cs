@@ -50,8 +50,6 @@ namespace covid19_patients_tracker
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "covid19_patients_tracker v1"));
             }
 
             app.UseHttpsRedirection();
@@ -62,16 +60,11 @@ namespace covid19_patients_tracker
 
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllerRoute(
-                //    name: "default",
-                //    pattern: "api/{action=patients}"
-                //    );
-
-                //endpoints.MapControllerRoute(
-                //    name: "default",
-                //    pattern: "api/{controller=Patient}/{action=List}/{id?}"
-                //    );
+                endpoints.MapControllers();
             });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "covid19_patients_tracker v1"));
         }
     }
 }

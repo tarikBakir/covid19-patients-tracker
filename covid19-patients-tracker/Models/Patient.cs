@@ -20,7 +20,7 @@ namespace covid19_patients_tracker.Models
         [Required]
         public string PhoneNumber { get; set; }
         [Required]
-        public string GovId { get; set; }
+        public string GovtId { get; set; }
         [Required]
         public DateTime DateOfBirth { get; set; }
         [Required]

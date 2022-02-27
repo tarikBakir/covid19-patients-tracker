@@ -10,7 +10,7 @@ using covid19_patients_tracker.Data;
 namespace covid19_patients_tracker.Migrations
 {
     [DbContext(typeof(CovidTrackerDbContext))]
-    [Migration("20220227172353_Initial-DB-Migration")]
+    [Migration("20220227173418_Initial-DB-Migration")]
     partial class InitialDBMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -90,7 +90,7 @@ namespace covid19_patients_tracker.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GovId")
+                    b.Property<string>("GovtId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

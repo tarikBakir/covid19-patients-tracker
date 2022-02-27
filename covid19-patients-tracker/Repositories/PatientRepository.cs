@@ -19,7 +19,6 @@ namespace covid19_patients_tracker.Repositories
         public async Task<Patient> CreatePatientAsync(Patient patient)
         {
             _covidTrackerDbContext.Patients.Add(patient);
-            //_covidTrackerDbContext.Entry(patient.Address).State = EntityState.Detached;
             await _covidTrackerDbContext.SaveChangesAsync();
             return patient;
         }
