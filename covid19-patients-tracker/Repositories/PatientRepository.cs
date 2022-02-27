@@ -149,5 +149,39 @@ namespace covid19_patients_tracker.Repositories
 
             return finalEncounters;
         }
+
+        public async Task<List<PatientEncounter>> GetListOfIsolatedPeople()
+        {
+            List<Patient> patients = await _covidTrackerDbContext.Patients.ToListAsync();
+            List<LabTest> labTests = await _covidTrackerDbContext.LabTests.Include(l => l.Patient).ToListAsync();
+            List<string> isolatedPatintIds = new List<string>();
+
+            foreach (Patient patient in patients)
+            {
+                int negativeTests = 0;
+                int positiveTests = 0;
+                foreach (LabTest labTest in labTests)
+                {
+                    if (labTest.Patient.PatientID == patient.PatientID)
+                    {
+                        if (labTest.isCovidPositive)
+                        {
+                            negativeTests++;
+                        } else
+                        {
+                            positiveTests++;
+                        }
+                    }
+                }
+                if (negativeTests < 2)
+                {
+                    isolatedPatintIds.Add(patient.PatientID);
+                }
+            }
+
+            List<PatientEncounter> patientEncounters = await _covidTrackerDbContext.PatientEncounters.Where(p => isolatedPatintIds.Contains(p.encounteredPatient.PatientID)).Include(p => p.encounteredPatient.Address).Include(p => p.potentialPatientDetails).ToListAsync();
+
+            return patientEncounters;
+        }
     }
 }

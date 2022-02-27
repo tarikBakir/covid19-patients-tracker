@@ -30,5 +30,7 @@ namespace covid19_patients_tracker.Interfaces
         Task<PotentialPatient> GetPotentialPatientByIdAsync(string id);
 
         Task<List<PatientEncounter>> GetListOfPatientsSince(DateTime since);
+
+        Task<List<PatientEncounter>> GetListOfIsolatedPeople();
     }
 }
