@@ -51,7 +51,8 @@ namespace covid19_patients_tracker.Repositories
 
         public async Task<List<PatientEncounter>> GetPatientEncounters(string patientId)
         {
-            var result = await _covidTrackerDbContext.PatientEncounters.Where(p => p.encounteredPatientId == patientId).Include(enc => enc.encounteredPatient).Include(pot => pot.potentialPatientDetails).ToListAsync();
+            var result = await _covidTrackerDbContext.PatientEncounters.Where(p => p.encounteredPatientId == patientId).Include(enc => enc.encounteredPatient.Address).Include(pot => pot.potentialPatientDetails).ToListAsync();
+            //_covidTrackerDbContext.Entry(FoundCategory).Collection(x => x.BlogCategories).Load();
             return result;
         }
     }

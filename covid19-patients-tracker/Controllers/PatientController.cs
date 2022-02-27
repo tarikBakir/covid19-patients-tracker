@@ -88,7 +88,7 @@ namespace covid19_patients_tracker.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new ArgumentNullException(nameof(id));
+                return BadRequest(new { message = "Patient ID not provided." });
             }
 
             List<PatientEncounter> result = await _patientRepository.GetPatientEncounters(id);
@@ -101,7 +101,7 @@ namespace covid19_patients_tracker.Controllers
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new ArgumentNullException(nameof(id));
+                return BadRequest(new { message = "Patient ID not provided." });
             }
 
             // var result = await _patientRepository.AddLocationVisitAsync(int.Parse(id));
@@ -109,12 +109,13 @@ namespace covid19_patients_tracker.Controllers
         }
 
         [Route("patients/{id}/route")]
+        [ProducesResponseType(typeof(List<NewPatientVisitedSite>), 200)]
         [HttpGet]
         public async Task<IActionResult> GetListLocations([FromRoute] string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new ArgumentNullException(nameof(id));
+                return BadRequest(new { message = "Patient ID not provided." });
             }
 
             // var result = await _patientRepository.GetListLocationsAsync(id);
