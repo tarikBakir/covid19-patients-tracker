@@ -2,21 +2,25 @@ pipeline {
     agent any
 
     stages {
-        stage ('Clean workspace') {
-            steps {
-                cleanWs()
+        stage('Restore packages'){
+           steps{
+               sh 'dotnet restore WebApplication.sln'
             }
-            
-        stage('Restore packages') {
-            steps {
-                bat "dotnet restore ${workspace}\\covid19-patients-tracker\\covid19-patients-tracker.sln"
+         }
+        stage('Clean'){
+           steps{
+               sh 'dotnet clean WebApplication.sln --configuration Release'
             }
-        }
-            
-        stage('Clean') {
-            steps {
-                bat "msbuild.exe ${workspace}\\covid19-patients-tracker\\covid19-patients-tracker.sln" /nologo /nr:false /p:platform=\"x64\" /p:configuration=\"release\" /t:clean"
+         }
+        stage('Build'){
+           steps{
+               sh 'dotnet build WebApplication.sln --configuration Release --no-restore'
             }
-        }
+         }
+        stage('Test: Unit Test'){
+           steps {
+                sh 'dotnet test XUnitTestProject/XUnitTestProject.csproj --configuration Release --no-restore'
+             }
+          }
     }
 }
