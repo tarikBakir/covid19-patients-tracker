@@ -1,6 +1,5 @@
 ﻿using covid19_patients_tracker.Models;
 using covid19_patients_tracker.Models.Dtos;
-using covid19_patients_tracker.Models.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,7 +2,6 @@
 using covid19_patients_tracker.Interfaces;
 using covid19_patients_tracker.Models;
 using covid19_patients_tracker.Models.Dtos;
-using covid19_patients_tracker.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -57,6 +57,7 @@ namespace covid19_patients_tracker_unit_test.Controllers
             _patientRepository.Setup(p => p.AddNewPatientVisit("", new SiteVisit())).Returns(Task.FromResult(new SiteVisit()));
             _patientRepository.Setup(p => p.GetPatientByIdAsync("sample_id")).Returns(Task.FromResult(new Patient()));
             _patientRepository.Setup(p => p.GetPotentialPatientByIdAsync("")).Returns(Task.FromResult(new PotentialPatient()));
+            _patientRepository.Setup(p => p.GetStatistics()).Returns(Task.FromResult(new CovidStatistics()));
 
             _patientController = new PatientController(_patientRepository.Object);
         }
@@ -211,6 +212,19 @@ namespace covid19_patients_tracker_unit_test.Controllers
             Assert.IsInstanceOfType(okResult.Value, typeof(List<PatientEncounterResponse>), "Returned Object Type is not a type of PatientEncounterResponse");
 
             List<PatientEncounterResponse>? patients = okResult.Value as List<PatientEncounterResponse>;
+        }
+
+        [TestMethod]
+        public async Task GetCovidStats_should_return_all_covid_stats()
+        {
+            var result = await _patientController.GetStatistics();
+
+            var okResult = result as ObjectResult;
+
+            // check if the result in not null and retuning 200 response
+            Assert.IsNotNull(okResult, "No Response from the method");
+            Assert.IsTrue(okResult is OkObjectResult, "The response in not 200");
+            Assert.IsInstanceOfType(okResult.Value, typeof(CovidStatistics), "Returned Object Type is not a type of CovidStats");
         }
     }
 }
