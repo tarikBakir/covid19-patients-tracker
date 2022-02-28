@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using covid19_patients_tracker.Data;
 
 namespace covid19_patients_tracker.Migrations
 {
     [DbContext(typeof(CovidTrackerDbContext))]
-    partial class CovidTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220227212110_Added-Patient-CreatedOn")]
+    partial class AddedPatientCreatedOn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

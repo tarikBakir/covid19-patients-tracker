@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using covid19_patients_tracker.Data;
 
 namespace covid19_patients_tracker.Migrations
 {
     [DbContext(typeof(CovidTrackerDbContext))]
-    partial class CovidTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220227192048_Added-Site-Visit-Table")]
+    partial class AddedSiteVisitTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,9 +78,6 @@ namespace covid19_patients_tracker.Migrations
 
                     b.Property<int?>("AddressId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
