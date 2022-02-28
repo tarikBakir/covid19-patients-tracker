@@ -3,19 +3,18 @@ pipeline {
 
     stages {
         stage('Build') {
-            when { changelog 'release*' }
             steps {
-                echo 'Building..'
+                dotnet build
             }
         }
         stage('Test') {
             steps {
-                echo 'Testing..'
+                dotnet test
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying....'
+                dotnet publish
             }
         }
     }
