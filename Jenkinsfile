@@ -4,17 +4,17 @@ pipeline {
     stages {
         stage('Restore packages'){
            steps{
-               sh 'dotnet restore WebApplication.sln'
+               sh 'dotnet restore covid19-patients-tracker.sln'
             }
          }
         stage('Clean'){
            steps{
-               sh 'dotnet clean WebApplication.sln --configuration Release'
+               sh 'dotnet clean covid19-patients-tracker.sln --configuration Release'
             }
          }
         stage('Build'){
            steps{
-               sh 'dotnet build WebApplication.sln --configuration Release --no-restore'
+               sh 'dotnet build covid19-patients-tracker.sln --configuration Release --no-restore'
             }
          }
         stage('Test: Unit Test'){
