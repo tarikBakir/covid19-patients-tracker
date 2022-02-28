@@ -40,19 +40,45 @@ namespace covid19_patients_tracker_unit_test.Controllers
 
             Task<List<Patient>> mockPatientsTask = Task.FromResult(mockPatients);
 
+            List<PatientEncounter> patEncounters = new List<PatientEncounter>
+            {
+                new PatientEncounter { potentialPatientDetails = new PotentialPatient(), encounteredPatient = new Patient() } 
+            };
+
             _patientRepository.Setup(p => p.GetAllPatientsAsync()).Returns(mockPatientsTask);
-            _patientRepository.Setup(p => p.CreatePatientAsync(new Patient())).Returns(Task.FromResult(new Patient()));
-            _patientRepository.Setup(p => p.GetPatientVisits("")).Returns(Task.FromResult(new List<SiteVisit>()));
-            _patientRepository.Setup(p => p.GetPatientEncounters("")).Returns(Task.FromResult(new List<PatientEncounter>()));
-            _patientRepository.Setup(p => p.GetPatientFullDetails("")).Returns(Task.FromResult(new PatientMedicalFile()));
-            _patientRepository.Setup(p => p.GetListOfPatientsSince(DateTime.UtcNow)).Returns(Task.FromResult(new List<PatientEncounter>()));
-            _patientRepository.Setup(p => p.GetAllPatientEncounters()).Returns(Task.FromResult(new List<PatientEncounter>()));
-            _patientRepository.Setup(p => p.GetListOfIsolatedPeople()).Returns(Task.FromResult(new List<PatientEncounter>()));
+            _patientRepository.Setup(p => p.CreatePatientAsync(newCreatePatient)).Returns(Task.FromResult(newCreatePatient));
+            _patientRepository.Setup(p => p.GetPatientVisits("sample_id")).Returns(Task.FromResult(new List<SiteVisit>()));
+            _patientRepository.Setup(p => p.GetPatientEncounters("sample_id")).Returns(Task.FromResult(patEncounters));
+            _patientRepository.Setup(p => p.GetPatientFullDetails("sample_id")).Returns(Task.FromResult(new PatientMedicalFile()));
+            _patientRepository.Setup(p => p.GetListOfPatientsSince(new DateTime(2022, 2, 25))).Returns(Task.FromResult(patEncounters));
+            _patientRepository.Setup(p => p.GetAllPatientEncounters()).Returns(Task.FromResult(patEncounters));
+            _patientRepository.Setup(p => p.GetListOfIsolatedPeople()).Returns(Task.FromResult(patEncounters));
             _patientRepository.Setup(p => p.AddPatientEncounter(new Patient(), new PotentialPatient())).Returns(Task.FromResult(new Patient()));
             _patientRepository.Setup(p => p.AddNewPatientVisit("", new SiteVisit())).Returns(Task.FromResult(new SiteVisit()));
+            _patientRepository.Setup(p => p.GetPatientByIdAsync("sample_id")).Returns(Task.FromResult(new Patient()));
+            _patientRepository.Setup(p => p.GetPotentialPatientByIdAsync("")).Returns(Task.FromResult(new PotentialPatient()));
+            _patientRepository.Setup(p => p.GetStatistics()).Returns(Task.FromResult(new CovidStatistics()));
 
             _patientController = new PatientController(_patientRepository.Object);
         }
+
+        public Patient newCreatePatient = new Patient {
+            PatientID = "bsdbhj",
+            GovtId = "test_id",
+            FirstName = "Alice",
+            LastName = "Edwards",
+            DateOfBirth = new DateTime(2000, 9, 20),
+            PhoneNumber = "3452727282",
+            Address = new Address { 
+                HouseNumber = 6,
+                ApartmentNumber = 0,
+                Street = "Edwards",
+                City = "Test City"
+            },
+            HouseMembersNumber = 6,
+            isCovidPositive = true,
+            CreatedOn = DateTime.Now
+        };
 
         [TestMethod]
         public async Task GetAllPatints_should_return_all_patients_in_the_system()
@@ -77,8 +103,15 @@ namespace covid19_patients_tracker_unit_test.Controllers
         {
             NewPatientRequest newPatientRequest = new NewPatientRequest
             {
-                FirstName = "New Patient",
-                LastName = "Lastname Patient"
+                FirstName = newCreatePatient.FirstName,
+                LastName = newCreatePatient.LastName,
+                GovtID =  newCreatePatient.GovtId,
+                Address = newCreatePatient.Address,
+                HouseResidentsAmount = newCreatePatient.HouseMembersNumber,
+                Email = newCreatePatient.Email,
+                PhoneNumber = newCreatePatient.PhoneNumber,
+                BirthDate = newCreatePatient.DateOfBirth,
+                IsCovidPositive = newCreatePatient.isCovidPositive
             };
             var result = await _patientController.CreatePatient(newPatientRequest);
 
@@ -139,7 +172,7 @@ namespace covid19_patients_tracker_unit_test.Controllers
         [TestMethod]
         public async Task GetAllSickPatients_should_return_all_sick_patients()
         {
-            var result = await _patientController.GetListOfPatientsSince(DateTime.UtcNow);
+            var result = await _patientController.GetListOfPatientsSince(new DateTime(2022, 2, 25));
 
             var okResult = result as ObjectResult;
 
@@ -179,6 +212,19 @@ namespace covid19_patients_tracker_unit_test.Controllers
             Assert.IsInstanceOfType(okResult.Value, typeof(List<PatientEncounterResponse>), "Returned Object Type is not a type of PatientEncounterResponse");
 
             List<PatientEncounterResponse>? patients = okResult.Value as List<PatientEncounterResponse>;
+        }
+
+        [TestMethod]
+        public async Task GetCovidStats_should_return_all_covid_stats()
+        {
+            var result = await _patientController.GetStatistics();
+
+            var okResult = result as ObjectResult;
+
+            // check if the result in not null and retuning 200 response
+            Assert.IsNotNull(okResult, "No Response from the method");
+            Assert.IsTrue(okResult is OkObjectResult, "The response in not 200");
+            Assert.IsInstanceOfType(okResult.Value, typeof(CovidStatistics), "Returned Object Type is not a type of CovidStats");
         }
     }
 }

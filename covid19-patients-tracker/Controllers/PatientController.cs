@@ -47,7 +47,7 @@ namespace covid19_patients_tracker.Controllers
                 CreatedOn = DateTime.UtcNow
             };
             var result = await _patientRepository.CreatePatientAsync(newPatient);
-            return Ok(new { patientID = result.PatientID });
+            return Ok(new { patientID = result?.PatientID });
         }
 
         [Route("patients/{id}/encounters")]

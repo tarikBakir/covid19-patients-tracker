@@ -26,17 +26,17 @@ namespace covid19_patients_tracker_unit_test.Controllers
             LabTestRequest newLabTest = new LabTestRequest
             {
                 TestDate = DateTime.Now,
-                LabID = "",
-                TestID = "",
-                PatientID = "",
+                LabID = "test_lab_id",
+                TestID = "test_id",
+                PatientID = "test_patient_id",
                 isCovidPositive = true
             };
 
             LabTest LabTest = new LabTest
             {
                 TestDate = DateTime.Now,
-                LabID = "",
-                TestID = "",
+                LabID = "test_lab_id",
+                TestID = "test_id",
                 isCovidPositive = true
             };
 
@@ -53,8 +53,8 @@ namespace covid19_patients_tracker_unit_test.Controllers
             LabTestRequest labTest = new LabTestRequest
             {
                 TestDate = DateTime.Now,
-                LabID = "",
-                TestID = "",
+                LabID = "test_lab_id",
+                TestID = "test_id",
                 isCovidPositive = true
             };
 
